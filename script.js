@@ -18,31 +18,6 @@ async function getData() {
   return cleaned;
 }
 
-async function run() {
-  // Load and plot the original input data that we are going to train on.
-  const data = await getData();
-  const values = data.map((d) => ({
-    x: d.horsepower,
-    y: d.mpg,
-  }));
-  // graficar
-  tfvis.render.scatterplot(
-    { name: "Horsepower v MPG" },
-    { values },
-    {
-      xLabel: "Horsepower",
-      yLabel: "MPG",
-      height: 300,
-    }
-  );
-  // Convert the data to a form we can use for training.
-const tensorData = convertToTensor(data);
-const {inputs, labels} = tensorData;
-
-// Train the model
-await trainModel(model, inputs, labels);
-console.log('Done Training');
-}
 function createModel() {
   // Create a sequential model
   const model = tf.sequential();
@@ -52,7 +27,6 @@ function createModel() {
 
   // Add an output layer
   model.add(tf.layers.dense({ units: 1, useBias: true }));
-  tfvis.show.modelSummary({ name: "Model Summary" }, model);
 
   return model;
 }
@@ -102,7 +76,6 @@ function convertToTensor(data) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", run);
 //Train model
 async function trainModel(model, inputs, labels) {
   // Prepare the model for training.
@@ -126,3 +99,31 @@ async function trainModel(model, inputs, labels) {
     ),
   });
 }
+async function run() {
+    // Load and plot the original input data that we are going to train on.
+    const data = await getData();
+    const values = data.map((d) => ({
+      x: d.horsepower,
+      y: d.mpg,
+    }));
+    // graficar
+    tfvis.render.scatterplot(
+      { name: "Horsepower v MPG" },
+      { values },
+      {
+        xLabel: "Horsepower",
+        yLabel: "MPG",
+        height: 300,
+      }
+    );
+    // Convert the data to a form we can use for training.
+  const tensorData = convertToTensor(data);
+  const {inputs, labels} = tensorData;
+  const model = createModel();
+  tfvis.show.modelSummary({name: 'Model Summary'}, model);
+  // Train the model
+  await trainModel(model, inputs, labels);
+  console.log('Done Training');
+  }
+
+  document.addEventListener("DOMContentLoaded", run);

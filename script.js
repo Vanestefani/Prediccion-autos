@@ -14,3 +14,26 @@ async function getData() {
 
     return cleaned;
   }
+
+  async function run() {
+    // Load and plot the original input data that we are going to train on.
+    const data = await getData();
+    const values = data.map(d => ({
+      x: d.horsepower,
+      y: d.mpg,
+    }));
+// graficar
+    tfvis.render.scatterplot(
+      {name: 'Horsepower v MPG'},
+      {values},
+      {
+        xLabel: 'Horsepower',
+        yLabel: 'MPG',
+        height: 300
+      }
+    );
+
+  
+  }
+
+  document.addEventListener('DOMContentLoaded', run);
